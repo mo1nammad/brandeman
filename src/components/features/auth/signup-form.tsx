@@ -1,3 +1,11 @@
+"use client";
+
+import Link from "next/link";
+
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,13 +17,46 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
 
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(4, "حداقل ورود 4 کارکتر الزامیست")
+    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
+  email: z
+    .email()
+    .min(1, "ایمیل وارد نشده است")
+    .max(128, "حداکثر کارکتر قابل قبول 128 واحد است"),
+  password: z
+    .string()
+    .min(6, "حداقل ورود 6 کارکتر الزامیست")
+    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
+  confirmPassword: z
+    .string()
+    .min(6, "حداقل ورود 6 کارکتر الزامیست")
+    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
+});
+
+import { Input } from "@/components/ui/input";
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
+  };
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -25,41 +66,101 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="name">نام کاربری</FieldLabel>
-              <Input id="name" type="text" required />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="email">ایمیل</FieldLabel>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-              />
-              <FieldDescription className="text-xs -mt-1!">
-                ما از این ایمیل برای ارتباط با شما استفاده خواهیم کرد و این
-                ایمیل با هیچ فرد دیگری به اشتراک گذاشته نخواهد شد
-              </FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="password">رمز ورود</FieldLabel>
-              <Input id="password" type="password" required />
-              <FieldDescription className="text-xs -mt-1!">
-                حداقل باید هشت کارکتر وارد کنید
-              </FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="confirm-password">
-                تاییدیه رمز عبور
-              </FieldLabel>
-              <Input id="confirm-password" type="password" required />
-              <FieldDescription className="text-xs -mt-1!">
-                لطفا رمز عبور خود را تایید کنید
-              </FieldDescription>
-            </Field>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="name">نام کاربری</FieldLabel>
+                  <Input
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="name"
+                    type="text"
+                    required
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="email">ایمیل</FieldLabel>
+                  <Input
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                  />
+                  <FieldDescription className="text-xs -mt-1!">
+                    ما از این ایمیل برای ارتباط با شما استفاده خواهیم کرد و این
+                    ایمیل با هیچ فرد دیگری به اشتراک گذاشته نخواهد شد
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="password">رمز ورود</FieldLabel>
+                  <Input
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="password"
+                    type="password"
+                    required
+                  />
+                  <FieldDescription className="text-xs -mt-1!">
+                    حداقل باید هشت کارکتر وارد کنید
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="confirmPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="confirm-password">
+                    تاییدیه رمز عبور
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    id="confirm-password"
+                    type="password"
+                    required
+                  />
+                  <FieldDescription className="text-xs -mt-1!">
+                    لطفا رمز عبور خود را تایید کنید
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
             <FieldGroup>
               <Field>
                 <Button type="submit">ساخت حساب</Button>
