@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const vazirFont = Vazirmatn({
   variable: "--font-vazir",
   subsets: ["latin"],
@@ -20,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body dir="rtl" className={`${vazirFont.variable} font-vazirmatn`}>
-        {children}
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );

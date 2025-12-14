@@ -1,10 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { signinFormSchema as formSchema } from "@/schemas/auth";
+
+import { signinAction } from "@/actions/auth/signin";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,22 +28,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  email: z
-    .email()
-    .min(1, "ایمیل وارد نشده است")
-    .max(256, "حداکثر کارکتر قابل قبول 256 واحد است"),
-  password: z
-    .string()
-    .min(1, "رمز عبور وارد نشده است")
-    .max(1024, "حداکثر کارکتر قابل قبول 1024 واحد است"),
-});
+import { toastAuthError } from "@/lib/auth-sonner";
 
 export function SigninForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,8 +43,14 @@ export function SigninForm({
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const response = await signinAction(data);
+    if (response.data.user) {
+      toast.success(`کاربر${response.data.user?.email} خوش آمدید `);
+      router.push("/");
+    }
+
+    if (response.error) toastAuthError(response.error);
   };
 
   return (

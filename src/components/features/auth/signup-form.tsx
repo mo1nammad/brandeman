@@ -1,10 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { signupFormSchema as formSchema } from "@/schemas/auth";
+
+import { signupAction } from "@/actions/auth/signup";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,27 +27,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(4, "حداقل ورود 4 کارکتر الزامیست")
-    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
-  email: z
-    .email()
-    .min(1, "ایمیل وارد نشده است")
-    .max(128, "حداکثر کارکتر قابل قبول 128 واحد است"),
-  password: z
-    .string()
-    .min(6, "حداقل ورود 6 کارکتر الزامیست")
-    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
-  confirmPassword: z
-    .string()
-    .min(6, "حداقل ورود 6 کارکتر الزامیست")
-    .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
-});
-
 import { Input } from "@/components/ui/input";
+import { toastAuthError } from "@/lib/auth-sonner";
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,8 +41,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const response = await signupAction(data);
+    if (response.data.user) {
+      toast.success(
+        `ثبت نام با ایمیل ${response.data.user?.email} انجام شد لطفا وارد حساب کاربری شوید`
+      );
+      router.push("/sign-in");
+    }
+    if (response.error) toastAuthError(response.error);
   };
 
   return (
@@ -127,7 +122,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     required
                   />
                   <FieldDescription className="text-xs -mt-1!">
-                    حداقل باید هشت کارکتر وارد کنید
+                    حداقل باید شش کارکتر وارد کنید
                   </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
