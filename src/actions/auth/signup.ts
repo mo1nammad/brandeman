@@ -9,6 +9,18 @@ import { AuthError } from "@supabase/supabase-js";
 
 export async function signupAction(schema: z.infer<typeof Schema>) {
   const supabase = await createClient();
+
+  const validateSchema = Schema.safeParse(schema);
+
+  if (!validateSchema.success)
+    return {
+      error: new AuthError("لطفا فرم ثبت نام را به درستی پر کنید"),
+      data: {
+        user: null,
+        session: null,
+      },
+    };
+
   if (schema.password !== schema.confirmPassword)
     return {
       error: new AuthError("رمز های ورود یکسان نیستند"),
@@ -25,5 +37,6 @@ export async function signupAction(schema: z.infer<typeof Schema>) {
       emailRedirectTo: `${WEBSITE_URL}/sign-in`,
     },
   });
+
   return data;
 }

@@ -38,14 +38,3 @@ export const signupFormSchema = z.object({
     .min(6, "حداقل ورود 6 کارکتر الزامیست")
     .max(64, "حداکثر کارکتر قابل قبول 64 واحد است"),
 });
-
-export type FormState =
-  | {
-      errors?: {
-        name?: string[];
-        email?: string[];
-        password?: string[];
-      };
-      message?: string;
-    }
-  | undefined;
