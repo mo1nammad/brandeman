@@ -45,12 +45,12 @@ export function SigninForm({
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const response = await signinAction(data);
-    if (response.data.user) {
-      toast.success(`کاربر${response.data.user?.email} خوش آمدید `);
+    if (response?.error) toastAuthError(response.error);
+
+    if (response?.data) {
+      toast.success(`${response.data.name} خوش آمدید `);
       router.push("/");
     }
-
-    if (response.error) toastAuthError(response.error);
   };
 
   return (

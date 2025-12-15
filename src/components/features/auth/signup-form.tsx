@@ -43,11 +43,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const response = await signupAction(data);
-    if (response.data.user) {
-      toast.success("لینک احراز هویت به این ایمیل ارسال شد");
-      router.push("/sign-in");
+    if (response?.data) {
+      toast.success(
+        `${response.data.name} عزیز، حساب کاربری شما با موفقیت ساخته شد`
+      );
+      router.push("/");
     }
-    if (response.error) toastAuthError(response.error);
+
+    if (response?.error) toastAuthError(response.error as Error);
   };
 
   return (

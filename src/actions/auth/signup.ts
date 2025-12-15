@@ -1,42 +1,43 @@
 "use server";
 
 import * as z from "zod";
-
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth";
 import { signupFormSchema as Schema } from "@/schemas/auth";
-import { WEBSITE_URL } from "@/lib/constant";
-import { AuthError } from "@supabase/supabase-js";
 
 export async function signupAction(schema: z.infer<typeof Schema>) {
-  const supabase = await createClient();
+  const validatedSchema = Schema.safeParse(schema);
 
-  const validateSchema = Schema.safeParse(schema);
-
-  if (!validateSchema.success)
+  if (!validatedSchema.success) {
     return {
-      error: new AuthError("لطفا فرم ثبت نام را به درستی پر کنید"),
-      data: {
-        user: null,
-        session: null,
-      },
+      data: null,
+      error: new Error("ورودی‌ها معتبر نیستند لطفاً دوباره تلاش کنید."),
     };
+  }
 
-  if (schema.password !== schema.confirmPassword)
+  if (schema.confirmPassword !== schema.password) {
     return {
-      error: new AuthError("رمز های ورود یکسان نیستند"),
-      data: {
-        user: null,
-        session: null,
-      },
+      data: null,
+      error: new Error("رمز عبور و تکرار رمز عبور مطابقت ندارند."),
     };
+  }
 
-  const data = await supabase.auth.signUp({
-    email: schema.email,
-    password: schema.password,
-    options: {
-      emailRedirectTo: `${WEBSITE_URL}/sign-in`,
-    },
-  });
+  try {
+    const response = await auth.api.signUpEmail({
+      body: {
+        email: validatedSchema.data.email,
+        name: validatedSchema.data.name,
+        password: validatedSchema.data.password,
+        callbackURL: "/",
+      },
+    });
 
-  return data;
+    return { data: response.user, error: null };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+  }
 }
