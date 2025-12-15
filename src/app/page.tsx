@@ -1,11 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  console.log(data?.claims.email);
-
   return (
     <div className="flex min-h-screen items-center justify-center gap-x-1.5 bg-zinc-50 font-sans dark:bg-black">
       <Button>primary</Button>
