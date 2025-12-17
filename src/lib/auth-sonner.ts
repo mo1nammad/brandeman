@@ -3,6 +3,8 @@ import { toast } from "sonner";
 export const toastAuthError = (error: Error) => {
   const messages: Record<string, string> = {
     "Invalid email or password": "ایمیل یا رمز کاربری اشتباه وارد شده است",
+    "User already exists. Use another email.":
+      "کاربری با این ایمیل قبلا ساخته شده است",
   };
 
   const message = messages[error.message]

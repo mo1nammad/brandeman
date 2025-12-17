@@ -123,7 +123,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     required
                   />
                   <FieldDescription className="text-xs -mt-1!">
-                    حداقل باید شش کارکتر وارد کنید
+                    حداقل باید هشت کارکتر وارد کنید
                   </FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

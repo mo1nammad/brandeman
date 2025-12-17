@@ -3,6 +3,7 @@ import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const vazirFont = Vazirmatn({
   variable: "--font-vazir",
@@ -20,10 +21,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body dir="rtl" className={`${vazirFont.variable} font-vazirmatn`}>
-        <main>{children}</main>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>{children}</main>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
