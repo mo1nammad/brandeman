@@ -1,4 +1,4 @@
-import { DashboardSidebar } from "@/components/features/dashboard/dashboard-sidebar";
+import { DashboardSidebar } from "@/components/features/dashboard/sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
