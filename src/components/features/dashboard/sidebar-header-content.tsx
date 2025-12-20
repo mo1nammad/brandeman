@@ -1,21 +1,53 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function SidebarHeaderContent() {
-  const { data, isPending } = authClient.useSession();
+  const { data } = authClient.useSession();
+  const router = useRouter();
 
   return (
-    <Card className="h-12 py-0 flex flex-row items-center justify-between px-1.5">
-      <Avatar className="size-8 rounded-full overflow-hidden text-sm">
-        <AvatarFallback className="bg-background flex justify-center items-center size-full">
-          {data?.user.name.slice(0, 2)}
-        </AvatarFallback>
-      </Avatar>
-    </Card>
+    <DropdownMenu>
+      <DropdownMenuTrigger className="cursor-pointer">
+        <Card className="h-13 py-0 flex flex-row-reverse items-center justify-between px-1.5 shadow-none">
+          <Avatar className="size-8">
+            <AvatarFallback className="bg-background text-xs">
+              {data?.user.name.slice(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex flex-col">
+            <h6 className="text-sm">{data?.user.name}</h6>
+            <p className="text-xs text-muted-foreground">{data?.user.email}</p>
+          </div>
+        </Card>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        side="bottom"
+        className="w-(--radix-popper-anchor-width)"
+      >
+        <DropdownMenuItem className="justify-end">
+          <button
+            className="text-destructive"
+            onClick={() => {
+              authClient.signOut();
+              router.push("/");
+            }}
+          >
+            خروج از حساب کاربری
+          </button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

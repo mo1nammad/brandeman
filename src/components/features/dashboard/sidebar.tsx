@@ -1,7 +1,6 @@
-"use client";
-
 import * as React from "react";
 
+import { Calendar, Inbox, Instagram, Slack } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,8 +19,29 @@ import {
 
 import SidebarHeaderContent from "./sidebar-header-content";
 
-// This is sample data.
-
+// Menu items.
+const items = [
+  {
+    title: "برند ها",
+    url: "/dashboard/brands",
+    icon: Slack,
+  },
+  {
+    title: "پیام ها",
+    url: "#",
+    icon: Inbox,
+  },
+  {
+    title: "بلاگ ها",
+    url: "#",
+    icon: Calendar,
+  },
+  {
+    title: "پست های اینستاگرامی",
+    url: "#",
+    icon: Instagram,
+  },
+];
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
@@ -30,6 +50,26 @@ export function DashboardSidebar({
       <SidebarHeader>
         <SidebarHeaderContent />
       </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>سرویس های من</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
     </Sidebar>
   );
 }
