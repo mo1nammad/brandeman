@@ -23,6 +23,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  brands        Brand[]
 
   @@unique([email])
   @@map("user")
@@ -74,4 +75,106 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Brand {
+  id     String @id @default(uuid())
+  userId String
+
+  // identity 
+  name        String
+  industry    String
+  stage       BrandStage
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user               User                @relation(references: [id], fields: [userId])
+  brandQuestionnaire BrandQuestionnaire?
+  brandStories       BrandStory[]
+}
+
+model BrandQuestionnaire {
+  id      String @id @default(uuid())
+  brandId String @unique
+
+  // Audience
+  audienceType     AudienceType
+  idealCustomer    String
+  painPoints       String
+  valueProposition String
+
+  // Brand DNA
+  values      String[]
+  personality String[]
+  antiValues  String?
+
+  // Positioning
+  competitors     String[]
+  differentiation String
+  desiredFeeling  String[]
+
+  // Voice & Vision
+  tone     ToneType
+  oneLiner String?
+  vision   String?
+  goals    String?
+
+  // Optional deep data
+  originStory   String?
+  redFlags      String?
+  failureReason String?
+
+  // Flexible / future
+  extra Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brand Brand @relation(fields: [brandId], references: [id])
+}
+
+model BrandStory {
+  id      String @id @default(uuid())
+  brandId String
+  version Int
+  prompt  Json
+  output  Json
+  model   String
+
+  createdAt DateTime @default(now())
+
+  brand Brand @relation(fields: [brandId], references: [id])
+
+  @@unique([brandId, version])
+}
+
+// model Credit {
+//   userId    String  @id
+//   balance   Int     @default(0)
+//   updatedAt DateTime @updatedAt
+
+//   user      User @relation(fields: [userId], references: [id])
+// }
+
+enum BrandStage {
+  IDEA
+  LAUNCH
+  GROWTH
+  ESTABLISHED
+}
+
+enum AudienceType {
+  B2C
+  B2B
+  BOTH
+}
+
+enum ToneType {
+  FORMAL
+  SEMI_FORMAL
+  FRIENDLY
+  BOLD
+  LUXURY
 }

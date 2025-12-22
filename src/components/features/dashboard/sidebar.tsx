@@ -1,4 +1,7 @@
-import * as React from "react";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Calendar, Inbox, Instagram, Slack } from "lucide-react";
 import {
@@ -45,6 +48,8 @@ const items = [
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <Sidebar dir="rtl" {...props}>
       <SidebarHeader>
@@ -58,11 +63,11 @@ export function DashboardSidebar({
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

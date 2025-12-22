@@ -26,7 +26,7 @@ export default function SidebarHeaderContent() {
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col items-start">
             <h6 className="text-sm">{data?.user.name}</h6>
             <p className="text-xs text-muted-foreground">{data?.user.email}</p>
           </div>
