@@ -1,40 +1,58 @@
 "use client";
 
 import React from "react";
-import { ChevronDown, ChevronRight, TestTubeDiagonal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  LucideIcon,
+  TestTubeDiagonal,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useGenerateSteps } from "@/store/use-generate-steps";
+import { useGenerateSteps, GenerateSteps } from "@/store/use-generate-steps";
 
-const formSteps = [
+type FormStep = {
+  id: number;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  formKey: keyof GenerateSteps["formValues"];
+};
+
+const formSteps: FormStep[] = [
   {
     id: 0,
     title: "Brand Fundamentals",
     description: "پایه‌های برند",
     icon: TestTubeDiagonal,
+    formKey: "fundamental",
   },
   {
     id: 1,
     title: "Audience Intelligence",
     description: "مخاطب هدف",
     icon: TestTubeDiagonal,
+    formKey: "audience",
   },
   {
     id: 2,
     title: "Brand DNA",
     description: "ارزش‌ها و DNA برند",
     icon: TestTubeDiagonal,
+    formKey: "brandDna",
   },
   {
     id: 3,
     title: "Positioning",
     description: "موقعیت بازار و رقبا",
     icon: TestTubeDiagonal,
+    formKey: "positioning",
   },
   {
     id: 4,
     title: "Voice & Vision",
     description: "لحن، پیام و آینده برند",
     icon: TestTubeDiagonal,
+    formKey: "voiceVision",
   },
 ];
 
@@ -43,7 +61,11 @@ type FormStepperProps = {
 };
 
 export const FormStepper = ({ className }: FormStepperProps) => {
-  const { setStep: setActiveStep, step: activeStep } = useGenerateSteps();
+  const {
+    setStep: setActiveStep,
+    step: activeStep,
+    formValues,
+  } = useGenerateSteps();
   return (
     <div
       className={cn(
@@ -54,8 +76,11 @@ export const FormStepper = ({ className }: FormStepperProps) => {
       {formSteps.map((step, index) => (
         <React.Fragment key={step.id}>
           <FormStep
-            onClick={() => setActiveStep(step.id)}
+            onClick={() => {
+              if (formValues[step.formKey]) setActiveStep(step.id);
+            }}
             isDone={activeStep >= step.id}
+            disabled={!formValues[step.formKey]}
             step={step}
           />
           {/* seperators */}
@@ -74,13 +99,22 @@ export const FormStepper = ({ className }: FormStepperProps) => {
 type FormStepProps = {
   step: (typeof formSteps)[0];
   isDone: boolean;
+  disabled?: boolean;
   onClick: () => void;
 };
-export const FormStep = ({ isDone, step, onClick }: FormStepProps) => {
+export const FormStep = ({
+  isDone,
+  step,
+  disabled,
+  onClick,
+}: FormStepProps) => {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-x-4 cursor-pointer"
+      className={cn(
+        "flex items-center gap-x-4 cursor-pointer",
+        disabled && !isDone && "cursor-not-allowed "
+      )}
     >
       <div className="flex flex-col text-left">
         <h6 className="text-sm">{step.title}</h6>

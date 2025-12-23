@@ -1,22 +1,10 @@
 import { create } from "zustand";
 
-import type {
-  AudienceFormValues,
-  BrandDnaFormValues,
-  FundamentalFormValues,
-  PositioningFormValues,
-  VoiceVisionFormValues,
-} from "@/schemas/generate";
+import type { BrandFormValuesOptional } from "@/types/generate";
 
-interface GenerateSteps {
+export interface GenerateSteps {
   step: number;
-  formValues: {
-    audience: AudienceFormValues | undefined;
-    brandDna: BrandDnaFormValues | undefined;
-    fundamental: FundamentalFormValues | undefined;
-    positioning: PositioningFormValues | undefined;
-    voiceVision: VoiceVisionFormValues | undefined;
-  };
+  formValues: BrandFormValuesOptional;
   setStep: (step: number) => void;
   setFormValues: (
     key: keyof GenerateSteps["formValues"],

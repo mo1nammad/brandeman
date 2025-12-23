@@ -116,7 +116,7 @@ model BrandQuestionnaire {
   desiredFeeling  String[]
 
   // Voice & Vision
-  tone     ToneType
+  tone     String
   oneLiner String?
   vision   String?
   goals    String?
@@ -169,12 +169,4 @@ enum AudienceType {
   B2C
   B2B
   BOTH
-}
-
-enum ToneType {
-  FORMAL
-  SEMI_FORMAL
-  FRIENDLY
-  BOLD
-  LUXURY
 }

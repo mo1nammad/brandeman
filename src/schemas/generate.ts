@@ -56,3 +56,11 @@ export const voiceVisionSchema = z.object({
 });
 
 export type VoiceVisionFormValues = z.infer<typeof voiceVisionSchema>;
+
+export const finalFormSchema = z.object({
+  audience: audienceSchema,
+  brandDna: brandDnaSchema,
+  fundamental: fundamentalSchema,
+  positioning: positioningSchema,
+  voiceVision: voiceVisionSchema,
+});

@@ -22,8 +22,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { ToneSelector } from "@/components/features/generate/tone-selector";
 
-export default function VoiceVisionForm() {
-  const { step, setStep, setFormValues, formValues } = useGenerateSteps();
+type Props = {
+  onSubmitForm?: () => void;
+};
+
+export default function VoiceVisionForm({ onSubmitForm }: Props) {
+  const { step, setStep, setFormValues } = useGenerateSteps();
 
   const form = useForm<VoiceVisionFormValues>({
     resolver: zodResolver(voiceVisionSchema),
@@ -37,7 +41,7 @@ export default function VoiceVisionForm() {
 
   const onSubmit = (data: VoiceVisionFormValues) => {
     setFormValues("voiceVision", data);
-    console.log(formValues);
+    onSubmitForm?.();
   };
 
   return (
