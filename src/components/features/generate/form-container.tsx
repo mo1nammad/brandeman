@@ -1,6 +1,7 @@
 "use client";
 
 import { Activity, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { useGenerateSteps } from "@/store/use-generate-steps";
 import type { BrandFormValues } from "@/types/generate";
@@ -29,6 +30,7 @@ import {
 export default function FormContainer() {
   const [openModal, setOpenModal] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const step = useGenerateSteps((s) => s.step);
   const formValues = useGenerateSteps((s) => s.formValues);
@@ -71,9 +73,14 @@ export default function FormContainer() {
                   const response = await generateBrand({
                     formValues: formValues as BrandFormValues,
                   });
+
                   if (response.data) {
-                    // console.log(response.data.brandId);
+                    router.push(
+                      `/generate/result?brandId=${response.data.brandId}`
+                    );
                   }
+
+                  setOpenModal(false);
                 });
               }}
             >
