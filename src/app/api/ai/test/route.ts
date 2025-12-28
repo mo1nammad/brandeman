@@ -1,7 +1,7 @@
 import { generateText } from "ai";
 import { model } from "@/lib/ai/model";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const result = await generateText({
       model: model.chat("openai/gpt-4.1"),

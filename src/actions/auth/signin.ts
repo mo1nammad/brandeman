@@ -15,14 +15,14 @@ export async function signinAction(schema: z.infer<typeof Schema>) {
     return Response.refuse("ورودی‌ها معتبر نیستند لطفاً دوباره تلاش کنید.");
   }
 
-  const userExists = await prisma.user.findUnique({
-    where: { email: validatedSchema.data.email },
-  });
-
-  if (!userExists)
-    return Response.refuse("همچین کاربری وجود ندارد. لطفاً ثبت‌نام کنید.");
-
   try {
+    const userExists = await prisma.user.findUnique({
+      where: { email: validatedSchema.data.email },
+    });
+
+    if (!userExists)
+      return Response.refuse("همچین کاربری وجود ندارد. لطفاً ثبت‌نام کنید.");
+
     const response = await auth.api.signInEmail({
       body: {
         email: validatedSchema.data.email,
