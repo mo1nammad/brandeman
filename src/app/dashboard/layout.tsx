@@ -37,8 +37,8 @@ export default async function DashboardLayout({
           </Breadcrumb>
           <SidebarTrigger className="-mr-1 ml-auto rotate-180" />
         </header>
-        <main dir="rtl" className="p-3">
-          {children}
+        <main dir="rtl" className="p-3 px-3.5">
+          <div className="max-w-7xl mx-auto px-3.5">{children}</div>
         </main>
       </SidebarInset>
       <DashboardSidebar side="right" />

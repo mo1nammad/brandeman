@@ -13,7 +13,7 @@ import {
 
 export default function EmptyBrand() {
   return (
-    <Empty>
+    <Empty className="absolute inset-0">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Folder />
