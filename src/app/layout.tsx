@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import Providers from "@/components/providers";
 
 const vazirFont = Vazirmatn({
   variable: "--font-vazir",
@@ -23,15 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body dir="rtl" className={`${vazirFont.variable} font-vazirmatn`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <main>{children}</main>
           <Toaster />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 
+import { cn } from "@/lib/utils";
+
 import UserBrands from "@/components/features/dashboard/brands/user-brands";
 import LoadingBrands from "@/components/features/dashboard/brands/loading-brands";
 import BrandsPageHeader from "@/components/features/dashboard/brands/brands-page-header";
-import { cn } from "@/lib/utils";
 
 type Props = {
   searchParams: Promise<{
@@ -15,6 +16,7 @@ export default async function BrandsPage({ searchParams }: Props) {
   const params = await searchParams;
   const searchFilter = params.search as string | undefined;
   const viewMode = params.view as string | undefined;
+
   return (
     <>
       <Suspense>
@@ -24,7 +26,7 @@ export default async function BrandsPage({ searchParams }: Props) {
         <div
           className={cn(
             "gap-12 md:grid-cols-2 2xl:grid-cols-3 grid-rows-3",
-            viewMode === "grid" ? "grid" : "flex flex-col"
+            viewMode === "list" ? "flex flex-col" : "grid"
           )}
         >
           <Suspense fallback={<LoadingBrands />}>

@@ -17,6 +17,7 @@ export default function BrandsPageHeader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const searchFilter = searchParams.get("search") || "";
   const layoutType = searchParams.get("view") || "grid";
 
   // Get a new searchParams string by merging the current
@@ -68,6 +69,7 @@ export default function BrandsPageHeader() {
       <div className="relative w-full">
         <Search className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
         <Input
+          defaultValue={searchFilter}
           onChange={(ev) => {
             const queryString = createQueryString("search", ev.target.value);
             router.replace(`${pathname}?${queryString}`);
