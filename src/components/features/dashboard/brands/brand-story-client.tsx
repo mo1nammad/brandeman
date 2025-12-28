@@ -46,7 +46,7 @@ export default function BrandStoryClient() {
     text: string;
   };
 
-  // TODO : create custom markup component
+  // TODO : create` custom markup component
   return (
     <div
       className="rounded-xl border bg-card text-card-foreground shadow-sm"
