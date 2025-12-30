@@ -9,6 +9,7 @@ import { BrandStoryApiResponse } from "@/types/brand";
 import { Button } from "@/components/ui/button";
 import CustomMarkup from "@/components/markup";
 import BrandStoryVersionBar from "./brand-story-version-bar";
+import { toast } from "sonner";
 
 type Props = {
   latestVersion: number;
@@ -19,39 +20,46 @@ export default function BrandStoryClient({ latestVersion }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const isRegenerate = searchParams.get("regenerate") === "true";
   const shouldRevalidate = searchParams.get("revalidate") === "true";
 
   const [storyVersion, setStoryVersion] = useState(latestVersion);
 
   // fetch brand data
-  const { data, isLoading, isError, isSuccess, refetch } = useQuery<
-    BrandStoryApiResponse["data"]
-  >({
-    queryKey: ["brandStory", params.brandId, storyVersion],
-    queryFn: async () => {
-      const response = await fetch(
-        `/api/brand/${params.brandId}/story?version=${storyVersion}`,
-        {
-          cache: "no-store",
-          next: {
-            revalidate: 30 * 60,
-          },
+  const { data, isLoading, isError, isSuccess, refetch, error } =
+    useQuery<BrandStoryApiResponse>({
+      queryKey: ["brandStory", params.brandId, storyVersion],
+      queryFn: async () => {
+        const response = await fetch(
+          `/api/brand/${params.brandId}/story?version=${storyVersion}`,
+          {
+            cache: "no-store",
+            next: {
+              revalidate: 30 * 60,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const message = await response.text();
+
+          switch (response.status) {
+            case 307:
+              router.replace(message);
+              break;
+
+            default:
+              toast.error("مشکلی در دریافت اطلاعات پیش آمد", {
+                description: message,
+              });
+              throw new Error(message);
+          }
         }
-      );
 
-      if (!response.ok) throw new Error(response.statusText);
+        const data: BrandStoryApiResponse = await response.json();
 
-      const { data, redirectTo }: BrandStoryApiResponse = await response.json();
-
-      if (redirectTo) {
-        if (!isRegenerate) router.replace(redirectTo);
-        return null;
-      }
-
-      return data;
-    },
-  });
+        return data;
+      },
+    });
 
   // life cycle
   useEffect(() => {
@@ -72,29 +80,27 @@ export default function BrandStoryClient({ latestVersion }: Props) {
   if (isError || !isSuccess)
     return (
       <div className="flex flex-col items-center justify-center">
-        <h3>مشکلی پیش آمد</h3>
+        <h3>{error ? error.message : "مشکلی پیش آمد"}</h3>
         <Link href="/dashboard/brands">
           <Button>بازگشت</Button>
         </Link>
       </div>
     );
 
-  if (isSuccess && data) {
-    const aiResponse = data.story.output as {
-      text: string;
-    };
+  const aiResponse = data.story.output as {
+    text: string;
+  };
 
-    return (
-      <div className="w-full h-full flex flex-col">
-        <BrandStoryVersionBar
-          activeVersion={storyVersion}
-          versions={data.brandInfo.versions}
-          onChangeVersion={setStoryVersion}
-          content={aiResponse.text}
-          storyId={data.story.id}
-        />
-        <CustomMarkup content={aiResponse.text} />
-      </div>
-    );
-  }
+  return (
+    <div className="w-full h-full flex flex-col">
+      <BrandStoryVersionBar
+        activeVersion={storyVersion}
+        versions={data.brandInfo.versions}
+        onChangeVersion={setStoryVersion}
+        content={aiResponse.text}
+        storyId={data.story.id}
+      />
+      <CustomMarkup content={aiResponse.text} />
+    </div>
+  );
 }
