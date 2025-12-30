@@ -2,6 +2,8 @@
 
 import { useRef, useEffect } from "react";
 import { useCompletion } from "@ai-sdk/react";
+
+import CustomMarkup from "@/components/markup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
@@ -41,7 +43,9 @@ export default function ResultStreamUi({ brandId }: Props) {
 
   return (
     <div className="prose max-w-7xl mx-auto whitespace-pre-wrap my-12 px-5">
-      {completion || (
+      {completion ? (
+        <CustomMarkup content={completion} />
+      ) : (
         <span className="text-2xl">در حال تولید هویت برند...</span>
       )}
       {isLoading && (

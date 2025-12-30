@@ -14,11 +14,7 @@ export async function getBrand({ brandId, userId }: GetBrandParam) {
         userId,
       },
       include: {
-        _count: {
-          select: {
-            brandStories: true,
-          },
-        },
+        brandStories: true,
       },
     });
 

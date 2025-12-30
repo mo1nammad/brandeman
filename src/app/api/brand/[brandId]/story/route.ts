@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/actions/auth/session";
 import { getBrandStory } from "@/actions/dashboard/brands/get-story";
 import { getBrand } from "@/actions/dashboard/brands/get-brand";
+import { BrandStoryApiResponse } from "@/types/brand";
 
 export async function GET(
   req: NextRequest,
@@ -36,7 +37,7 @@ export async function GET(
       version:
         version && typeof Number(version) === "number"
           ? Number(version)
-          : brandExists.data._count.brandStories,
+          : brandExists.data.brandStories.length,
     });
 
     if (!brandStory.data?.id)
@@ -44,14 +45,20 @@ export async function GET(
         status: 404,
       });
 
-    return NextResponse.json({
-      storyCount: brandExists.data._count.brandStories,
-      info: {
+    const result: BrandStoryApiResponse = {
+      storyCount: brandExists.data.brandStories.length,
+      brandInfo: {
         name: brandExists.data.name,
         industry: brandExists.data.industry,
+        versions: brandExists.data.brandStories.map((story) => ({
+          version: story.version,
+          createdAt: story.createdAt,
+        })),
       },
       story: brandStory.data,
-    });
+    };
+
+    return NextResponse.json(result);
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal server error", {
