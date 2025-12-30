@@ -27,9 +27,16 @@ export async function GET(
     });
 
     if (!brandExists.data?.id)
-      return new NextResponse("not found", {
+      return new NextResponse("Brand not found", {
         status: 404,
       });
+
+    if (brandExists.data.brandStories.length === 0) {
+      return NextResponse.json({
+        data: null,
+        redirectTo: `/dashboard/brands/${brandExists.data.id}?regenerate=true`,
+      } satisfies BrandStoryApiResponse);
+    }
 
     // get story by version
     const brandStory = await getBrandStory({
@@ -41,21 +48,24 @@ export async function GET(
     });
 
     if (!brandStory.data?.id)
-      return new NextResponse("not found", {
+      return new NextResponse("Brand story not found", {
         status: 404,
       });
 
     const result: BrandStoryApiResponse = {
-      storyCount: brandExists.data.brandStories.length,
-      brandInfo: {
-        name: brandExists.data.name,
-        industry: brandExists.data.industry,
-        versions: brandExists.data.brandStories.map((story) => ({
-          version: story.version,
-          createdAt: story.createdAt,
-        })),
+      data: {
+        storyCount: brandExists.data.brandStories.length,
+        brandInfo: {
+          name: brandExists.data.name,
+          industry: brandExists.data.industry,
+          versions: brandExists.data.brandStories.map((story) => ({
+            version: story.version,
+            createdAt: story.createdAt,
+          })),
+        },
+        story: brandStory.data,
       },
-      story: brandStory.data,
+      redirectTo: null,
     };
 
     return NextResponse.json(result);
