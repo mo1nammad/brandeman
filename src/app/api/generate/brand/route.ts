@@ -3,7 +3,7 @@ import { streamText } from "ai";
 
 import prisma from "@/lib/prisma";
 import { getSession } from "@/actions/auth/session";
-import { model, modelId } from "@/lib/ai/model";
+import { model } from "@/lib/ai/model";
 import { buildBrandPrompt } from "@/lib/ai/build-brand-prompt";
 
 export async function POST(request: NextRequest) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   const prompt = buildBrandPrompt(brand, brand.brandQuestionnaire);
 
   const result = streamText({
-    model: model.chat(modelId),
+    model: model.chat(brand.model),
     prompt,
     onFinish: async ({ text }) => {
       const version =
@@ -55,7 +55,6 @@ export async function POST(request: NextRequest) {
           version,
           prompt: { text: prompt },
           output: { text },
-          model: modelId,
         },
       });
     },

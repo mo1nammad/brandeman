@@ -1,15 +1,16 @@
 import { z } from "zod";
+import { BRAND_STAGES } from "@/lib/constant";
 
 export const fundamentalSchema = z.object({
   brandName: z.string().min(2, "نام برند باید حداقل ۲ کاراکتر باشد"),
 
   industry: z.string().min(2, "حوزه فعالیت الزامی است"),
 
-  stage: z.enum(["IDEA", "LAUNCH", "GROWTH", "ESTABLISHED"], {
+  stage: z.enum(BRAND_STAGES, {
     error: "مرحله برند را انتخاب کنید",
   }),
 
-  productDescription: z.string().min(10, "توضیح محصول حداقل ۱۰ کاراکتر باشد"),
+  description: z.string().min(10, "توضیح محصول حداقل ۱۰ کاراکتر باشد"),
 });
 
 export type FundamentalFormValues = z.infer<typeof fundamentalSchema>;

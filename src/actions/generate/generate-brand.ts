@@ -30,6 +30,7 @@ export async function generateBrand(params: GenerateBrandParams) {
       name: formValidated.data.fundamental.brandName,
       industry: formValidated.data.fundamental.industry,
       stage: formValidated.data.fundamental.stage,
+      description: formValidated.data.fundamental.description,
       brandQuestionnaire: {
         create: {
           // Audience

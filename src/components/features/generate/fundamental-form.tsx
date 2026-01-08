@@ -33,8 +33,8 @@ export default function FundamentalForm() {
     resolver: zodResolver(fundamentalSchema),
     defaultValues: {
       brandName: "",
+      description: "",
       industry: "",
-      productDescription: "",
       stage: "IDEA",
     },
   });
@@ -120,7 +120,7 @@ export default function FundamentalForm() {
 
           <Controller
             control={form.control}
-            name="productDescription"
+            name="description"
             render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>محصول یا خدمت اصلی شما چیست؟</FieldLabel>

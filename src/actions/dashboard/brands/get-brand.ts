@@ -15,6 +15,7 @@ export async function getBrand({ brandId, userId }: GetBrandParam) {
       },
       include: {
         brandStories: true,
+        brandQuestionnaire: true,
       },
     });
 

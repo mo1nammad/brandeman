@@ -87,10 +87,16 @@ model Brand {
   stage       BrandStage
   description String?
 
+  // ai
+  model String @default("openai/gpt-4.1")
+
+  // privacy
+  visibility BrandVisibility @default(PUBLIC)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user               User                @relation(references: [id], fields: [userId])
+  user               User                @relation(references: [id], fields: [userId], onDelete: Cascade)
   brandQuestionnaire BrandQuestionnaire?
   brandStories       BrandStory[]
 }
@@ -141,7 +147,6 @@ model BrandStory {
   version Int
   prompt  Json
   output  Json
-  model   String
 
   createdAt DateTime @default(now())
 
@@ -169,4 +174,9 @@ enum AudienceType {
   B2C
   B2B
   BOTH
+}
+
+enum BrandVisibility {
+  PRIVATE
+  PUBLIC
 }

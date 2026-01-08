@@ -43,10 +43,8 @@ export default function BrandStoryVersionBar({
     const el = ref.current;
     if (!el) return;
 
-    // ⬅️ اسکرول واقعی به انتهای راست
     el.scrollLeft = el.scrollWidth - el.clientWidth;
 
-    // fallback برای iOS Safari
     if (el.scrollLeft === 0) {
       el.scrollLeft = el.scrollWidth;
     }
